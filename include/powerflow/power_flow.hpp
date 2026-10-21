@@ -19,11 +19,22 @@ enum class SolverKind {
 
 const char* to_string(SolverKind kind);
 
+// Which factorisation the Newton loop uses for J dx = mismatch. Both produce the
+// same answer; the sparse path is the default and is what makes large cases
+// tractable.
+enum class LinearSolver {
+    Sparse,
+    Dense,
+};
+
+const char* to_string(LinearSolver kind);
+
 struct SolverOptions {
     double tolerance = 1e-8;      // pu, applied to the largest power mismatch
     int max_iterations = 30;      // Newton needs 4-6 for the IEEE cases
     bool enforce_q_limits = false;
     int max_q_limit_switches = 12;
+    LinearSolver linear_solver = LinearSolver::Sparse;
 };
 
 struct SolverStatus {
@@ -37,6 +48,13 @@ struct PowerFlowResult {
     SolverKind method = SolverKind::NewtonRaphson;
     SolverStatus status;
     double base_mva = 100.0;
+
+    // Diagnostics from the last linear solve, so the report can show how sparse
+    // the Jacobian really is and how much fill-in the factorisation created.
+    LinearSolver linear_solver = LinearSolver::Sparse;
+    std::size_t jacobian_nonzeros = 0;
+    std::size_t factor_nonzeros = 0;
+    std::size_t pivoting_swaps = 0;
 
     std::vector<double> vm;       // pu, one entry per bus
     std::vector<double> va;       // degrees

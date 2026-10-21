@@ -1,4 +1,4 @@
-%CASE30   IEEE 30-bus test system - power-flow data for the PowerFlow solver.
+%CASE30   IEEE 30-bus test system - power-system data for the PowerFlow solver.
 %
 %   IEEE 30-bus network, 6 generators
 %
@@ -6,8 +6,8 @@
 %   Common Data Format as distributed with MATPOWER's case30.m.  See
 %   data/README.md for provenance and licensing notes.
 %
-%   Layout: MATPOWER case format (version 2).  Sections the power flow does not
-%   need (mpc.gencost, mpc.bus_name) are intentionally omitted.
+%   Layout: MATPOWER case format (version 2).  Sections nothing here reads
+%   (mpc.bus_name, mpc.gentype, ...) are intentionally omitted.
 
 %% MATPOWER Case Format : Version 2
 mpc.version = '2';
@@ -106,4 +106,16 @@ mpc.branch = [
 	29	30	0.24	0.45	0	16	16	16	0	0	1	-360	360;
 	8	28	0.06	0.2	0.02	32	32	32	0	0	1	-360	360;
 	6	28	0.02	0.06	0.01	32	32	32	0	0	1	-360	360;
+];
+
+%%-----  OPF Data  -----%%
+%% generator cost data
+%	model	startup	shutdown	n	c(n-1)	...	c0
+mpc.gencost = [
+	2	0	0	3	0.02	2	0;
+	2	0	0	3	0.0175	1.75	0;
+	2	0	0	3	0.0625	1	0;
+	2	0	0	3	0.00834	3.25	0;
+	2	0	0	3	0.025	3	0;
+	2	0	0	3	0.025	3	0;
 ];

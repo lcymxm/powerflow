@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "powerflow/dense.hpp"
+#include "powerflow/sparse.hpp"
 #include "powerflow/types.hpp"
 
 namespace pf {
@@ -54,7 +55,8 @@ public:
     // PV buses followed by PQ buses, i.e. every bus whose voltage angle is unknown.
     const std::vector<Index>& non_slack_buses() const noexcept { return non_slack_; }
 
-    const ComplexMatrix& ybus() const noexcept { return ybus_; }
+    // Sparse: a real network has only a handful of nonzeros per row.
+    const SparseMatrix<Complex>& ybus() const noexcept { return ybus_; }
     // Bus shunt admittance in pu, i.e. (Gs + j*Bs) / baseMVA.
     const std::vector<Complex>& bus_shunts() const noexcept { return bus_shunts_; }
     const std::vector<BranchAdmittance>& branch_admittances() const noexcept { return branch_adm_; }
@@ -78,7 +80,7 @@ private:
     std::vector<Index> pq_;
     std::vector<Index> isolated_;
     std::vector<Index> non_slack_;
-    ComplexMatrix ybus_;
+    SparseMatrix<Complex> ybus_;
     std::vector<Complex> bus_shunts_;
     std::vector<BranchAdmittance> branch_adm_;
     std::vector<bool> branch_on_;

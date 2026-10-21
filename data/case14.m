@@ -1,4 +1,4 @@
-%CASE14   IEEE 14-bus test system - power-flow data for the PowerFlow solver.
+%CASE14   IEEE 14-bus test system - power-system data for the PowerFlow solver.
 %
 %   1962 IEEE 14-bus network, 5 generators
 %
@@ -6,8 +6,8 @@
 %   Common Data Format as distributed with MATPOWER's case14.m.  See
 %   data/README.md for provenance and licensing notes.
 %
-%   Layout: MATPOWER case format (version 2).  Sections the power flow does not
-%   need (mpc.gencost, mpc.bus_name) are intentionally omitted.
+%   Layout: MATPOWER case format (version 2).  Sections nothing here reads
+%   (mpc.bus_name, mpc.gentype, ...) are intentionally omitted.
 
 %% MATPOWER Case Format : Version 2
 mpc.version = '2';
@@ -68,4 +68,15 @@ mpc.branch = [
 	10	11	0.08205	0.19207	0	0	0	0	0	0	1	-360	360;
 	12	13	0.22092	0.19988	0	0	0	0	0	0	1	-360	360;
 	13	14	0.17093	0.34802	0	0	0	0	0	0	1	-360	360;
+];
+
+%%-----  OPF Data  -----%%
+%% generator cost data
+%	model	startup	shutdown	n	c(n-1)	...	c0
+mpc.gencost = [
+	2	0	0	3	0.0430292599	20	0;
+	2	0	0	3	0.25	20	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
 ];

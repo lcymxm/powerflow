@@ -1,4 +1,4 @@
-%CASE118   IEEE 118-bus test system - power-flow data for the PowerFlow solver.
+%CASE118   IEEE 118-bus test system - power-system data for the PowerFlow solver.
 %
 %   IEEE 118-bus network, 54 generators
 %
@@ -6,8 +6,8 @@
 %   Common Data Format as distributed with MATPOWER's case118.m.  See
 %   data/README.md for provenance and licensing notes.
 %
-%   Layout: MATPOWER case format (version 2).  Sections the power flow does not
-%   need (mpc.gencost, mpc.bus_name) are intentionally omitted.
+%   Layout: MATPOWER case format (version 2).  Sections nothing here reads
+%   (mpc.bus_name, mpc.gentype, ...) are intentionally omitted.
 
 %% MATPOWER Case Format : Version 2
 mpc.version = '2';
@@ -387,4 +387,64 @@ mpc.branch = [
 	12	117	0.0329	0.14	0.0358	0	0	0	0	0	1	-360	360;
 	75	118	0.0145	0.0481	0.01198	0	0	0	0	0	1	-360	360;
 	76	118	0.0164	0.0544	0.01356	0	0	0	0	0	1	-360	360;
+];
+
+%%-----  OPF Data  -----%%
+%% generator cost data
+%	model	startup	shutdown	n	c(n-1)	...	c0
+mpc.gencost = [
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.0222222222	20	0;
+	2	0	0	3	0.117647059	20	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.0454545455	20	0;
+	2	0	0	3	0.0318471338	20	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	1.42857143	20	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.526315789	20	0;
+	2	0	0	3	0.0490196078	20	0;
+	2	0	0	3	0.208333333	20	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.064516129	20	0;
+	2	0	0	3	0.0625	20	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.0255754476	20	0;
+	2	0	0	3	0.0255102041	20	0;
+	2	0	0	3	0.0193648335	20	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.0209643606	20	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	2.5	20	0;
+	2	0	0	3	0.0164744646	20	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.0396825397	20	0;
+	2	0	0	3	0.25	20	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.277777778	20	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.01	40	0;
 ];

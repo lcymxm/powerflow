@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "powerflow/jacobian.hpp"
+#include "powerflow/sparse_lu.hpp"
 
 namespace pf {
 
@@ -18,6 +19,16 @@ const char* to_string(SolverKind kind) {
             return "Newton-Raphson";
         case SolverKind::GaussSeidel:
             return "Gauss-Seidel";
+    }
+    return "?";
+}
+
+const char* to_string(LinearSolver kind) {
+    switch (kind) {
+        case LinearSolver::Sparse:
+            return "sparse LU";
+        case LinearSolver::Dense:
+            return "dense LU";
     }
     return "?";
 }
@@ -79,7 +90,8 @@ std::vector<Complex> voltage_vector(const std::vector<double>& vm,
 }
 
 // S = V .* conj(Y V)
-std::vector<Complex> calc_injection(const ComplexMatrix& ybus, const std::vector<Complex>& v) {
+std::vector<Complex> calc_injection(const SparseMatrix<Complex>& ybus,
+                                    const std::vector<Complex>& v) {
     const std::vector<Complex> current = matvec(ybus, v);
     std::vector<Complex> s(v.size());
     for (std::size_t i = 0; i < v.size(); ++i) {
@@ -132,8 +144,9 @@ double largest_abs(const std::vector<double>& values) {
 
 // Runs Newton iterations until convergence or the iteration budget runs out.
 SolverStatus run_newton(const Network& net, WorkingState& state, const SolverOptions& options,
-                        std::vector<double>& history) {
+                        PowerFlowResult& result) {
     SolverStatus status;
+    std::vector<double>& history = result.mismatch_history;
     const std::vector<Index> non_slack = collect_non_slack(state.type);
     const std::vector<Index> pq = collect_pq(state.type);
     const std::size_t n_theta = non_slack.size();
@@ -143,6 +156,11 @@ SolverStatus run_newton(const Network& net, WorkingState& state, const SolverOpt
         status.message = "nothing to solve (single slack bus)";
         return status;
     }
+
+    // The Jacobian's sparsity pattern is the same on every iteration, so the
+    // fill-reducing ordering only has to be computed once per solve.
+    std::vector<std::size_t> ordering;
+    bool have_ordering = false;
 
     for (int iteration = 1; iteration <= options.max_iterations; ++iteration) {
         const std::vector<Complex> v = voltage_vector(state.vm, state.va);
@@ -163,10 +181,27 @@ SolverStatus run_newton(const Network& net, WorkingState& state, const SolverOpt
 
         std::vector<double> correction;
         try {
-            const RealMatrix jac =
-                build_power_flow_jacobian(net.ybus(), state.vm, state.va, non_slack, pq);
-            LuSolver<double> solver(jac);
-            correction = solver.solve(mismatch);
+            const SparseMatrix<double> jac =
+                assemble_sparse_jacobian(net.ybus(), state.vm, state.va, non_slack, pq);
+            result.linear_solver = options.linear_solver;
+            result.jacobian_nonzeros = jac.nonzeros();
+
+            if (options.linear_solver == LinearSolver::Dense) {
+                const DenseMatrix<double> dense = to_dense(jac);
+                LuSolver<double> solver(dense);
+                correction = solver.solve(mismatch);
+                result.factor_nonzeros = dense.rows() * dense.cols();
+                result.pivoting_swaps = 0;
+            } else {
+                if (!have_ordering) {
+                    ordering = minimum_degree_order(symmetric_pattern(jac));
+                    have_ordering = true;
+                }
+                SparseLu solver(jac, ordering);
+                correction = solver.solve(mismatch);
+                result.factor_nonzeros = solver.stats().nnz_factors;
+                result.pivoting_swaps = solver.stats().row_swaps;
+            }
         } catch (const std::exception& error) {
             status.converged = false;
             status.message = std::string("linear solve failed: ") + error.what();
@@ -317,7 +352,7 @@ PowerFlowResult solve_newton_raphson(const Network& net, const SolverOptions& op
     SolverStatus status;
     const int rounds = options.enforce_q_limits ? options.max_q_limit_switches + 1 : 1;
     for (int round = 0; round < rounds; ++round) {
-        status = run_newton(net, state, options, result.mismatch_history);
+        status = run_newton(net, state, options, result);
         if (!status.converged || !options.enforce_q_limits) {
             break;
         }
@@ -333,7 +368,7 @@ PowerFlowResult solve_newton_raphson(const Network& net, const SolverOptions& op
 
 PowerFlowResult solve_gauss_seidel(const Network& net, const SolverOptions& options) {
     const std::size_t nb = net.bus_count();
-    const ComplexMatrix& ybus = net.ybus();
+    const SparseMatrix<Complex>& ybus = net.ybus();
 
     PowerFlowResult result;
     result.method = SolverKind::GaussSeidel;

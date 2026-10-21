@@ -104,10 +104,14 @@ void Network::classify() {
 }
 
 void Network::build_ybus() {
-    ybus_ = ComplexMatrix(bus_count_, bus_count_, Complex{});
     bus_shunts_.assign(bus_count_, Complex{});
     branch_adm_.assign(data_.branches.size(), BranchAdmittance{});
     branch_on_.assign(data_.branches.size(), false);
+
+    // Assembled as triplets: parallel branches and the bus shunts simply add up
+    // on the same entry, and the builder merges them.
+    SparseMatrix<Complex>::Builder builder(bus_count_, bus_count_);
+    builder.reserve(data_.branches.size() * 4 + bus_count_);
 
     for (Index k = 0; k < data_.branches.size(); ++k) {
         const Branch& br = data_.branches[k];
@@ -131,17 +135,21 @@ void Network::build_ybus() {
 
         const Index f = index_of(br.from);
         const Index t = index_of(br.to);
-        ybus_(f, f) += adm.yff;
-        ybus_(f, t) += adm.yft;
-        ybus_(t, f) += adm.ytf;
-        ybus_(t, t) += adm.ytt;
+        builder.add(f, f, adm.yff);
+        builder.add(f, t, adm.yft);
+        builder.add(t, f, adm.ytf);
+        builder.add(t, t, adm.ytt);
     }
 
     for (Index i = 0; i < bus_count_; ++i) {
         const Bus& b = data_.buses[i];
         bus_shunts_[i] = Complex{b.gs, b.bs} / data_.base_mva;
-        ybus_(i, i) += bus_shunts_[i];
+        if (bus_shunts_[i] != Complex{}) {
+            builder.add(i, i, bus_shunts_[i]);
+        }
     }
+
+    ybus_ = builder.build();
 }
 
 Index Network::index_of(int bus_id) const {

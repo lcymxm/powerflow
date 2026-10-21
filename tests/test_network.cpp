@@ -75,12 +75,21 @@ TEST(Network, ClassifiesIeee14) {
 
 TEST(Network, YbusIsSymmetric) {
     const pf::Network net(pf::load_case_file(data_path("case14.m")));
-    const pf::ComplexMatrix& y = net.ybus();
+    const pf::SparseMatrix<pf::Complex>& y = net.ybus();
     for (std::size_t i = 0; i < net.bus_count(); ++i) {
         for (std::size_t j = 0; j < net.bus_count(); ++j) {
             CHECK_NEAR(std::abs(y(i, j) - y(j, i)), 0.0, 1e-12);
         }
     }
+}
+
+TEST(Network, YbusIsSparse) {
+    // A connected network cannot have more than a few nonzeros per row; the
+    // whole point of the sparse storage is that this stays O(n) rather than n^2.
+    const pf::Network net(pf::load_case_file(data_path("case118.m")));
+    const std::size_t dense = net.bus_count() * net.bus_count();
+    CHECK(net.ybus().nonzeros() < dense / 4);
+    CHECK(net.ybus().nonzeros() >= 2 * net.branch_count());
 }
 
 TEST(Network, YbusRowSumIsTheBusCharging) {

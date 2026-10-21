@@ -62,6 +62,12 @@ struct Generator {
     bool online = true;
     double pmax = 0.0;
     double pmin = 0.0;
+
+    // Polynomial operating cost from `mpc.gencost`, in $/h for a Pg in MW:
+    // c2 * Pg^2 + c1 * Pg + c0.
+    double cost_c2 = 0.0;
+    double cost_c1 = 0.0;
+    double cost_c0 = 0.0;
 };
 
 // One row of `mpc.branch`. The tap is stored as magnitude plus phase shift in
@@ -86,6 +92,9 @@ struct CaseData {
     std::vector<Bus> buses;
     std::vector<Generator> generators;
     std::vector<Branch> branches;
+    // True when `mpc.gencost` supplied a polynomial cost for every generator, so
+    // an optimal power flow has something to minimise.
+    bool has_generation_costs = false;
 };
 
 }  // namespace pf

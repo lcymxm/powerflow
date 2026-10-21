@@ -1,5 +1,6 @@
 // Command-line entry point: parses arguments, runs the requested solver and
 // hands the result to the report / diagram writers.
+#include <chrono>
 #include <cstdlib>
 #include <fstream>
 #include <iomanip>
@@ -10,14 +11,17 @@
 #include <vector>
 
 #include "powerflow/case_file.hpp"
+#include "powerflow/contingency.hpp"
+#include "powerflow/dc_opf.hpp"
 #include "powerflow/network.hpp"
 #include "powerflow/power_flow.hpp"
 #include "powerflow/report.hpp"
 #include "powerflow/svg_renderer.hpp"
+#include "powerflow/synthetic.hpp"
 
 namespace {
 
-constexpr const char* kVersion = "1.0.0";
+constexpr const char* kVersion = "1.2.0";
 
 struct CliOptions {
     std::string case_path;
@@ -25,8 +29,14 @@ struct CliOptions {
     std::string json_path;
     std::string svg_path;
     std::string method = "nr";
+    std::string linear = "sparse";
     double tolerance = 1e-8;
     int max_iterations = -1;  // -1 picks the per-method default
+    int benchmark_buses = 0;
+    int contingency_worst = 10;
+    bool contingency = false;
+    bool contingency_generators = false;
+    bool opf = false;
     bool enforce_q_limits = false;
     bool show_tables = true;
     bool show_help = false;
@@ -38,6 +48,7 @@ void print_usage(std::ostream& out) {
         << "\n"
         << "usage:\n"
         << "  powerflow <case-file> [options]\n"
+        << "  powerflow --benchmark <buses>     scaling benchmark on a synthetic grid\n"
         << "\n"
         << "arguments:\n"
         << "  <case-file>              MATPOWER .m case file (mpc.bus / mpc.gen / mpc.branch)\n"
@@ -46,6 +57,8 @@ void print_usage(std::ostream& out) {
         << "  -h, --help               show this message\n"
         << "  --version                show the version\n"
         << "  --method <nr|gs|both>    solver selection, default nr\n"
+        << "  --linear <sparse|dense>  Jacobian factorisation, default sparse\n"
+        << "  --benchmark <buses>      solve a synthetic grid with both factorisations\n"
         << "  --tol <value>            power-mismatch tolerance in pu, default 1e-8\n"
         << "  --max-iter <count>       iteration limit, default 30 (nr) or 2000 (gs)\n"
         << "  --enforce-q-limits       turn PV buses that hit Q limits into PQ buses\n"
@@ -89,6 +102,28 @@ CliOptions parse_arguments(int argc, char** argv) {
             options.method = value_of("--method");
             if (options.method != "nr" && options.method != "gs" && options.method != "both") {
                 throw std::runtime_error("--method must be one of nr, gs, both");
+            }
+        } else if (argument == "--linear") {
+            options.linear = value_of("--linear");
+            if (options.linear != "sparse" && options.linear != "dense") {
+                throw std::runtime_error("--linear must be sparse or dense");
+            }
+        } else if (argument == "--n1") {
+            options.contingency = true;
+        } else if (argument == "--opf") {
+            options.opf = true;
+        } else if (argument == "--n1-generators") {
+            options.contingency = true;
+            options.contingency_generators = true;
+        } else if (argument == "--n1-worst") {
+            options.contingency_worst = std::stoi(value_of("--n1-worst"));
+            if (options.contingency_worst <= 0) {
+                throw std::runtime_error("--n1-worst must be positive");
+            }
+        } else if (argument == "--benchmark") {
+            options.benchmark_buses = std::stoi(value_of("--benchmark"));
+            if (options.benchmark_buses < 4) {
+                throw std::runtime_error("--benchmark needs at least 4 buses");
             }
         } else if (argument == "--tol") {
             options.tolerance = std::stod(value_of("--tol"));
@@ -140,6 +175,82 @@ std::string format_comparison(const pf::PowerFlowResult& newton, const pf::Power
     return out.str();
 }
 
+std::string format_seconds(double seconds) {
+    std::ostringstream out;
+    out << std::fixed << std::setprecision(3) << seconds << " s";
+    return out.str();
+}
+
+// Solves a synthetic grid of the requested size twice: once with the sparse
+// factorisation and, when the problem is still small enough to be runnable, once
+// with the dense one. The point is to show both that they agree and how the cost
+// scales.
+int run_benchmark(int bus_count) {
+    const pf::CaseData data = pf::make_synthetic_case(bus_count);
+    const pf::Network network(data);
+
+    pf::SolverOptions options;
+    options.max_iterations = 40;
+
+    const std::size_t n = network.non_slack_buses().size() + network.pq_buses().size();
+    std::cout << "synthetic grid : " << bus_count << " buses, " << network.branch_count()
+              << " branches\n";
+
+    options.linear_solver = pf::LinearSolver::Sparse;
+    const auto sparse_start = std::chrono::steady_clock::now();
+    const pf::PowerFlowResult sparse = pf::solve_newton_raphson(network, options);
+    const double sparse_seconds =
+        std::chrono::duration<double>(std::chrono::steady_clock::now() - sparse_start).count();
+
+    if (!sparse.status.converged) {
+        std::cout << "sparse LU      : NOT CONVERGED (" << sparse.status.message << ")\n";
+        return 2;
+    }
+
+    const double dense_entries = static_cast<double>(n) * static_cast<double>(n);
+    std::cout << "Jacobian       : " << n << " x " << n << ", " << sparse.jacobian_nonzeros
+              << " nonzeros ("
+              << std::fixed << std::setprecision(2)
+              << 100.0 * static_cast<double>(sparse.jacobian_nonzeros) / dense_entries
+              << " % of dense)\n";
+    std::cout << "sparse LU      : " << sparse.status.iterations << " iterations, "
+              << format_seconds(sparse_seconds) << ", factors " << sparse.factor_nonzeros
+              << " nnz (includes the one-time fill-reducing ordering)\n";
+
+    // A dense factorisation needs n^2 doubles and n^3/3 flops; past a few hundred
+    // unknowns that is no longer a useful comparison, it is just slow.
+    constexpr std::size_t kDenseLimit = 900;
+    if (n <= kDenseLimit) {
+        options.linear_solver = pf::LinearSolver::Dense;
+        const auto dense_start = std::chrono::steady_clock::now();
+        const pf::PowerFlowResult dense = pf::solve_newton_raphson(network, options);
+        const double dense_seconds =
+            std::chrono::duration<double>(std::chrono::steady_clock::now() - dense_start).count();
+
+        double max_voltage_difference = 0.0;
+        for (std::size_t i = 0; i < network.bus_count(); ++i) {
+            max_voltage_difference =
+                std::max(max_voltage_difference, std::abs(sparse.vm[i] - dense.vm[i]));
+        }
+
+        std::cout << "dense LU       : " << dense.status.iterations << " iterations, "
+                  << format_seconds(dense_seconds) << "\n";
+        std::cout << "agreement      : max |dVm| = " << std::scientific
+                  << std::setprecision(2) << max_voltage_difference << " pu, losses differ by "
+                  << std::abs(sparse.p_loss_mw - dense.p_loss_mw) << " MW\n";
+        if (dense_seconds > 0.0) {
+            std::cout << "speed-up       : " << std::fixed << std::setprecision(2)
+                      << dense_seconds / sparse_seconds << "x\n";
+        }
+    } else {
+        const double megabytes = dense_entries * 8.0 / (1024.0 * 1024.0);
+        std::cout << "dense LU       : skipped (n = " << n << " needs " << std::fixed
+                  << std::setprecision(1) << megabytes
+                  << " MB for the matrix alone, and O(n^3) work)\n";
+    }
+    return 0;
+}
+
 int run(const CliOptions& options) {
     const pf::CaseData case_data = pf::load_case_file(options.case_path);
     const pf::Network network(case_data);
@@ -147,6 +258,41 @@ int run(const CliOptions& options) {
     pf::SolverOptions solver_options;
     solver_options.tolerance = options.tolerance;
     solver_options.enforce_q_limits = options.enforce_q_limits;
+    solver_options.linear_solver =
+        options.linear == "dense" ? pf::LinearSolver::Dense : pf::LinearSolver::Sparse;
+
+    if (options.contingency) {
+        pf::ContingencyOptions contingency_options;
+        contingency_options.solver = solver_options;
+        contingency_options.include_generators = options.contingency_generators;
+        contingency_options.worst_count = static_cast<std::size_t>(options.contingency_worst);
+
+        const pf::ContingencyReport report =
+            pf::run_contingency_scan(network, contingency_options);
+        std::cout << pf::format_contingency_report(report, contingency_options);
+
+        // 0: every outage is survivable, 3: an outage breaks a limit,
+        // 2: an outage could not even be solved.
+        if (report.solved < report.elements) {
+            return 2;
+        }
+        return report.secure == report.elements ? 0 : 3;
+    }
+
+    if (options.opf) {
+        const pf::DcOpfResult money = pf::solve_dc_opf(network);
+        std::cout << pf::format_dc_opf_report(network, money);
+
+        // The network-free dispatch is a lower bound on the cost: any flow limit
+        // can only make things more expensive.
+        const pf::DcOpfResult unconstrained = pf::solve_economic_dispatch(network);
+        std::cout << "\nreference\n";
+        std::cout << "  economic dispatch (no network) : " << std::fixed << std::setprecision(2)
+                  << unconstrained.objective << " $/h\n";
+        std::cout << "  cost of the network limits     : "
+                  << (money.objective - unconstrained.objective) << " $/h\n";
+        return money.converged ? 0 : 2;
+    }
 
     int exit_code = 0;
 
@@ -227,6 +373,14 @@ int main(int argc, char** argv) {
     if (options.show_version) {
         std::cout << "powerflow " << kVersion << '\n';
         return 0;
+    }
+    if (options.benchmark_buses > 0) {
+        try {
+            return run_benchmark(options.benchmark_buses);
+        } catch (const std::exception& error) {
+            std::cerr << "error: " << error.what() << '\n';
+            return 1;
+        }
     }
     if (options.case_path.empty()) {
         print_usage(std::cerr);

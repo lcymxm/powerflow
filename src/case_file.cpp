@@ -304,6 +304,37 @@ CaseData parse_case_text(const std::string& text, const std::string& name) {
         data.branches.push_back(branch);
     }
 
+    // `mpc.gencost` is optional: only an optimal power flow needs it. Polynomial
+    // costs (model 2) with up to three coefficients are understood; piecewise
+    // linear costs are not, and simply leave the case without costs.
+    if (find_key(clean, "mpc.gencost") != std::string::npos) {
+        const auto cost_rows = parse_matrix(clean, "mpc.gencost", name, 4);
+        bool complete = cost_rows.size() >= data.generators.size();
+        for (std::size_t g = 0; g < data.generators.size() && g < cost_rows.size(); ++g) {
+            const auto& row = cost_rows[g];
+            const int model = static_cast<int>(std::lround(row[0]));
+            const int coefficients = static_cast<int>(std::lround(row[3]));
+            if (model != 2 || coefficients < 1 || coefficients > 3 ||
+                row.size() < static_cast<std::size_t>(4 + coefficients)) {
+                complete = false;
+                continue;
+            }
+            Generator& gen = data.generators[g];
+            // Highest order first: c2, c1, c0.
+            if (coefficients == 3) {
+                gen.cost_c2 = row[4];
+                gen.cost_c1 = row[5];
+                gen.cost_c0 = row[6];
+            } else if (coefficients == 2) {
+                gen.cost_c1 = row[4];
+                gen.cost_c0 = row[5];
+            } else {
+                gen.cost_c0 = row[4];
+            }
+        }
+        data.has_generation_costs = complete;
+    }
+
     return data;
 }
 

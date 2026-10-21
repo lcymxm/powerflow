@@ -1,4 +1,4 @@
-%CASE9   IEEE 9-bus test system - power-flow data for the PowerFlow solver.
+%CASE9   IEEE 9-bus test system - power-system data for the PowerFlow solver.
 %
 %   WSCC 3-machine, 9-bus system
 %
@@ -6,8 +6,8 @@
 %   Common Data Format as distributed with MATPOWER's case9.m.  See
 %   data/README.md for provenance and licensing notes.
 %
-%   Layout: MATPOWER case format (version 2).  Sections the power flow does not
-%   need (mpc.gencost, mpc.bus_name) are intentionally omitted.
+%   Layout: MATPOWER case format (version 2).  Sections nothing here reads
+%   (mpc.bus_name, mpc.gentype, ...) are intentionally omitted.
 
 %% MATPOWER Case Format : Version 2
 mpc.version = '2';
@@ -50,4 +50,13 @@ mpc.branch = [
 	8	2	0	0.0625	0	250	250	250	0	0	1	-360	360;
 	8	9	0.032	0.161	0.306	250	250	250	0	0	1	-360	360;
 	9	4	0.01	0.085	0.176	250	250	250	0	0	1	-360	360;
+];
+
+%%-----  OPF Data  -----%%
+%% generator cost data
+%	model	startup	shutdown	n	c(n-1)	...	c0
+mpc.gencost = [
+	2	1500	0	3	0.11	5	150;
+	2	2000	0	3	0.085	1.2	600;
+	2	3000	0	3	0.1225	1	335;
 ];

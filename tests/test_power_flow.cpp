@@ -232,6 +232,43 @@ TEST(PowerFlow, JacobianMatchesFiniteDifferences) {
     }
 }
 
+TEST(PowerFlow, SparseAndDenseLinearSolversAgree) {
+    // The two factorisations are completely different code paths, so matching
+    // results to the last digit is a strong check on both.
+    for (const char* name : {"case14.m", "case57.m", "case118.m"}) {
+        const pf::Network net = load_network(name);
+
+        pf::SolverOptions sparse_options = tight_options();
+        sparse_options.linear_solver = pf::LinearSolver::Sparse;
+        const pf::PowerFlowResult sparse = pf::solve_newton_raphson(net, sparse_options);
+
+        pf::SolverOptions dense_options = tight_options();
+        dense_options.linear_solver = pf::LinearSolver::Dense;
+        const pf::PowerFlowResult dense = pf::solve_newton_raphson(net, dense_options);
+
+        CHECK(sparse.status.converged);
+        CHECK(dense.status.converged);
+        CHECK_EQ(sparse.status.iterations, dense.status.iterations);
+        CHECK_NEAR(sparse.p_loss_mw, dense.p_loss_mw, 1e-9);
+        CHECK_NEAR(sparse.q_loss_mvar, dense.q_loss_mvar, 1e-6);
+        for (std::size_t i = 0; i < net.bus_count(); ++i) {
+            CHECK_NEAR(sparse.vm[i], dense.vm[i], 1e-10);
+            CHECK_NEAR(sparse.va[i], dense.va[i], 1e-8);
+        }
+    }
+}
+
+TEST(PowerFlow, SparsePathReportsACompactFactorisation) {
+    const pf::Network net = load_network("case118.m");
+    const pf::PowerFlowResult result = pf::solve_newton_raphson(net, tight_options());
+
+    CHECK(result.linear_solver == pf::LinearSolver::Sparse);
+    CHECK(result.jacobian_nonzeros > 0);
+    // The factors stay far below the dense n^2 the old path would have stored.
+    const std::size_t n = net.non_slack_buses().size() + net.pq_buses().size();
+    CHECK(result.factor_nonzeros < n * n / 2);
+}
+
 TEST(PowerFlow, GaussSeidelAgreesWithNewton) {
     const pf::Network net = load_network("case14.m");
 

@@ -34,11 +34,15 @@ endfunction()
 # ------------------------------------------------------------------- core ----
 add_library(powerflow_core
     src/case_file.cpp
+    src/contingency.cpp
+    src/dc_opf.cpp
     src/jacobian.cpp
     src/network.cpp
     src/power_flow.cpp
     src/report.cpp
-    src/svg_renderer.cpp)
+    src/sparse_lu.cpp
+    src/svg_renderer.cpp
+    src/synthetic.cpp)
 
 target_include_directories(powerflow_core PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -57,10 +61,13 @@ if(POWERFLOW_BUILD_TESTS AND BUILD_TESTING)
     add_executable(powerflow_tests
         tests/test_main.cpp
         tests/test_case_file.cpp
+        tests/test_contingency.cpp
+        tests/test_dc_opf.cpp
         tests/test_dense.cpp
         tests/test_network.cpp
         tests/test_power_flow.cpp
-        tests/test_report.cpp)
+        tests/test_report.cpp
+        tests/test_sparse.cpp)
 
     target_link_libraries(powerflow_tests PRIVATE powerflow_core)
     target_include_directories(powerflow_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tests)
@@ -84,6 +91,15 @@ if(POWERFLOW_BUILD_TESTS AND BUILD_TESTING)
     add_test(NAME powerflow.cli.ieee14_svg COMMAND powerflow ${case14} --no-tables
              --svg ${CMAKE_CURRENT_BINARY_DIR}/case14.svg)
     add_test(NAME powerflow.cli.compare COMMAND powerflow ${case14} --method both --no-tables)
+    add_test(NAME powerflow.cli.dense COMMAND powerflow ${case14} --no-tables --linear dense)
+    add_test(NAME powerflow.cli.n1 COMMAND powerflow ${case14} --n1 --n1-worst 3)
+    # The scan deliberately exits non-zero when it finds a contingency that breaks
+    # a limit (case14 does), so this smoke test only checks that it produced a
+    # report rather than judging the network's security.
+    set_tests_properties(powerflow.cli.n1 PROPERTIES PASS_REGULAR_EXPRESSION
+        "N-1 contingency scan")
+    add_test(NAME powerflow.cli.opf COMMAND powerflow ${case30} --opf)
+    add_test(NAME powerflow.cli.benchmark COMMAND powerflow --benchmark 120)
 endif()
 
 # ------------------------------------------------------------------ install ----

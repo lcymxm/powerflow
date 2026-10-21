@@ -1,4 +1,4 @@
-%CASE57   IEEE 57-bus test system - power-flow data for the PowerFlow solver.
+%CASE57   IEEE 57-bus test system - power-system data for the PowerFlow solver.
 %
 %   IEEE 57-bus network, 7 generators
 %
@@ -6,8 +6,8 @@
 %   Common Data Format as distributed with MATPOWER's case57.m.  See
 %   data/README.md for provenance and licensing notes.
 %
-%   Layout: MATPOWER case format (version 2).  Sections the power flow does not
-%   need (mpc.gencost, mpc.bus_name) are intentionally omitted.
+%   Layout: MATPOWER case format (version 2).  Sections nothing here reads
+%   (mpc.bus_name, mpc.gentype, ...) are intentionally omitted.
 
 %% MATPOWER Case Format : Version 2
 mpc.version = '2';
@@ -173,4 +173,17 @@ mpc.branch = [
 	38	49	0.115	0.177	0.003	0	0	0	0	0	1	-360	360;
 	38	48	0.0312	0.0482	0	0	0	0	0	0	1	-360	360;
 	9	55	0	0.1205	0	0	0	0	0.94	0	1	-360	360;
+];
+
+%%-----  OPF Data  -----%%
+%% generator cost data
+%	model	startup	shutdown	n	c(n-1)	...	c0
+mpc.gencost = [
+	2	0	0	3	0.077579519	20	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.25	20	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.0222222222	20	0;
+	2	0	0	3	0.01	40	0;
+	2	0	0	3	0.0322580645	20	0;
 ];
