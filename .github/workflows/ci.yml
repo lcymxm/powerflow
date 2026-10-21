@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: ${{ matrix.os }} / ${{ matrix.label }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            label: gcc (strict)
+            cxx: g++
+            strict: "ON"
+          - os: ubuntu-latest
+            label: clang
+            cxx: clang++
+            strict: "OFF"
+          - os: macos-latest
+            label: appleclang
+            cxx: clang++
+            strict: "OFF"
+          - os: windows-latest
+            label: msvc
+            cxx: ""
+            strict: "OFF"
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Configure
+        shell: bash
+        run: |
+          args=(-S . -B build
+                -DCMAKE_BUILD_TYPE=Release
+                -DPOWERFLOW_WARNINGS_AS_ERRORS=${{ matrix.strict }})
+          if [ -n "${{ matrix.cxx }}" ]; then
+            args+=("-DCMAKE_CXX_COMPILER=${{ matrix.cxx }}")
+          fi
+          cmake "${args[@]}"
+
+      - name: Build
+        shell: bash
+        run: cmake --build build --config Release --parallel
+
+      - name: Test
+        shell: bash
+        run: ctest --test-dir build --build-config Release --output-on-failure

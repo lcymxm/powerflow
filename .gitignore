@@ -1,0 +1,31 @@
+# Build output
+build/
+build_manual/
+cmake-build-*/
+out/
+bin/
+lib/
+powerflow_test_artifacts/
+
+# Editor / IDE
+.idea/
+.vscode/
+*.swp
+*~
+.cache/
+compile_commands.json
+
+# Generated artefacts
+*.o
+*.obj
+*.exe
+*.a
+*.lib
+*.dll
+*.pdb
+*.ilk
+*.svg.out
+
+# Local results people may generate while experimenting
+results/
+*.csv.tmp

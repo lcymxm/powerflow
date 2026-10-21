@@ -1,0 +1,13 @@
+# Normalise line endings so the CMake, .m and SVG files behave the same on
+# Windows, macOS and Linux.
+* text=auto eol=lf
+
+*.cpp   text eol=lf
+*.hpp   text eol=lf
+*.m     text eol=lf
+*.cmake text eol=lf
+*.yml   text eol=lf
+*.svg   text eol=lf
+
+*.zip   binary
+*.png   binary

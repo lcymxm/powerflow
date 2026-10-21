@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="820" viewBox="0 0 1200 820" role="img">
+<defs>
+  <linearGradient id="voltageRamp" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0.0%" stop-color="#db2626"/>
+    <stop offset="12.5%" stop-color="#ad4e34"/>
+    <stop offset="25.0%" stop-color="#7e7542"/>
+    <stop offset="37.5%" stop-color="#509d50"/>
+    <stop offset="50.0%" stop-color="#21c45e"/>
+    <stop offset="62.5%" stop-color="#28b484"/>
+    <stop offset="75.0%" stop-color="#2ea3aa"/>
+    <stop offset="87.5%" stop-color="#3493cf"/>
+    <stop offset="100.0%" stop-color="#3b82f5"/>
+  </linearGradient>
+  <radialGradient id="backdrop" cx="50%" cy="38%" r="78%">
+    <stop offset="0%" stop-color="#15203a"/>
+    <stop offset="100%" stop-color="#0b1220"/>
+  </radialGradient>
+</defs>
+<rect width="100%" height="100%" fill="url(#backdrop)"/>
+<text x="40.00" y="34" fill="#f1f5f9" font-family="system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif" font-size="21" font-weight="600">case14   |   14 buses, 20 branches</text>
+<text x="40.00" y="56" fill="#94a3b8" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="12.5">Newton-Raphson   |   3 iterations   |   losses 13.39 MW / 30.12 MVAr</text>
+<g stroke-linecap="round">
+  <line x1="1056.64" y1="642.00" x2="856.98" y2="634.97" stroke="#667894" stroke-width="5.10" opacity="0.8"/>
+  <line x1="1056.64" y1="642.00" x2="908.43" y2="488.78" stroke="#667894" stroke-width="3.87" opacity="0.8"/>
+  <line x1="856.98" y1="634.97" x2="706.98" y2="642.00" stroke="#667894" stroke-width="3.82" opacity="0.8"/>
+  <line x1="856.98" y1="634.97" x2="622.22" y2="534.66" stroke="#667894" stroke-width="3.48" opacity="0.8"/>
+  <line x1="856.98" y1="634.97" x2="908.43" y2="488.78" stroke="#667894" stroke-width="3.15" opacity="0.8"/>
+  <line x1="706.98" y1="642.00" x2="622.22" y2="534.66" stroke="#667894" stroke-width="2.66" opacity="0.8"/>
+  <line x1="622.22" y1="534.66" x2="908.43" y2="488.78" stroke="#667894" stroke-width="3.63" opacity="0.8"/>
+  <line x1="622.22" y1="534.66" x2="327.85" y2="533.58" stroke="#667894" stroke-width="2.85" opacity="0.8"/>
+  <line x1="622.22" y1="534.66" x2="467.49" y2="359.01" stroke="#667894" stroke-width="2.38" opacity="0.8"/>
+  <line x1="908.43" y1="488.78" x2="936.23" y2="238.12" stroke="#667894" stroke-width="3.25" opacity="0.8"/>
+  <line x1="936.23" y1="238.12" x2="675.11" y2="120.00" stroke="#667894" stroke-width="2.01" opacity="0.8"/>
+  <line x1="936.23" y1="238.12" x2="1114.00" y2="120.00" stroke="#667894" stroke-width="2.01" opacity="0.8"/>
+  <line x1="936.23" y1="238.12" x2="919.94" y2="120.00" stroke="#667894" stroke-width="2.49" opacity="0.8"/>
+  <line x1="327.85" y1="533.58" x2="86.00" y2="622.39" stroke="#667894" stroke-width="2.44" opacity="0.8"/>
+  <line x1="327.85" y1="533.58" x2="467.49" y2="359.01" stroke="#667894" stroke-width="2.80" opacity="0.8"/>
+  <line x1="467.49" y1="359.01" x2="435.02" y2="157.94" stroke="#667894" stroke-width="1.92" opacity="0.8"/>
+  <line x1="467.49" y1="359.01" x2="674.25" y2="222.56" stroke="#667894" stroke-width="2.11" opacity="0.8"/>
+  <line x1="435.02" y1="157.94" x2="675.11" y2="120.00" stroke="#667894" stroke-width="1.75" opacity="0.8"/>
+  <line x1="1114.00" y1="120.00" x2="919.94" y2="120.00" stroke="#667894" stroke-width="1.52" opacity="0.8"/>
+  <line x1="919.94" y1="120.00" x2="674.25" y2="222.56" stroke="#667894" stroke-width="1.87" opacity="0.8"/>
+</g>
+<g>
+  <polygon points="0,-3.4 8,0 0,3.4" fill="#667894" opacity="0.95" transform="translate(940.84,637.92) rotate(-178.0)"/>
+  <polygon points="0,-3.4 8,0 0,3.4" fill="#667894" opacity="0.95" transform="translate(970.68,553.13) rotate(-134.0)"/>
+  <polygon points="0,-3.4 8,0 0,3.4" fill="#667894" opacity="0.95" transform="translate(769.98,639.05) rotate(177.3)"/>
+  <polygon points="0,-3.4 8,0 0,3.4" fill="#667894" opacity="0.95" transform="translate(720.82,576.79) rotate(-156.9)"/>
+  <polygon points="0,-3.4 8,0 0,3.4" fill="#667894" opacity="0.95" transform="translate(886.82,550.18) rotate(-70.6)"/>
+  <polygon points="0,-3.4 8,0 0,3.4" fill="#667894" opacity="0.95" transform="translate(671.38,596.92) rotate(51.7)"/>
+  <polygon points="0,-3.4 8,0 0,3.4" fill="#667894" opacity="0.95" transform="translate(742.43,515.39) rotate(170.9)"/>
+  <polygon points="0,-3.4 8,0 0,3.4" fill="#667894" opacity="0.95" transform="translate(451.49,534.03) rotate(-179.8)"/>
+  <polygon points="0,-3.4 8,0 0,3.4" fill="#667894" opacity="0.95" transform="translate(532.48,432.78) rotate(-131.4)"/>
+  <polygon points="0,-3.4 8,0 0,3.4" fill="#667894" opacity="0.95" transform="translate(924.56,343.40) rotate(-83.7)"/>
+  <polygon points="0,-3.4 8,0 0,3.4" fill="#667894" opacity="0.95" transform="translate(926.78,169.61) rotate(-97.9)"/>
+  <polygon points="0,-3.4 8,0 0,3.4" fill="#667894" opacity="0.95" transform="translate(226.28,570.88) rotate(-20.2)"/>
+  <polygon points="0,-3.4 8,0 0,3.4" fill="#667894" opacity="0.95" transform="translate(408.84,432.33) rotate(-51.3)"/>
+  <polygon points="0,-3.4 8,0 0,3.4" fill="#667894" opacity="0.95" transform="translate(587.41,279.87) rotate(-33.4)"/>
+</g>
+<g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace">
+  <circle cx="1056.64" cy="642.00" r="16.00" fill="#309db9" stroke="#f8fafc" stroke-width="2.60"/>
+  <text x="1056.64" y="645.60" fill="#f8fafc" font-size="11.5" font-weight="600" text-anchor="middle">1</text>
+  <text x="1056.64" y="669.50" fill="#cbd5e1" stroke="#0b1220" stroke-width="2.6" stroke-linejoin="round" paint-order="stroke" font-size="9" text-anchor="middle">1.060</text>
+  <circle cx="856.98" cy="634.97" r="13.00" fill="#2da7a2" stroke="#cbd5e1" stroke-width="2.00"/>
+  <text x="856.98" y="638.57" fill="#f8fafc" font-size="11.5" font-weight="600" text-anchor="middle">2</text>
+  <text x="856.98" y="659.47" fill="#cbd5e1" stroke="#0b1220" stroke-width="2.6" stroke-linejoin="round" paint-order="stroke" font-size="9" text-anchor="middle">1.045</text>
+  <circle cx="706.98" cy="642.00" r="13.00" fill="#24be6d" stroke="#cbd5e1" stroke-width="2.00"/>
+  <text x="706.98" y="645.60" fill="#0b1220" font-size="11.5" font-weight="600" text-anchor="middle">3</text>
+  <text x="706.98" y="666.50" fill="#cbd5e1" stroke="#0b1220" stroke-width="2.6" stroke-linejoin="round" paint-order="stroke" font-size="9" text-anchor="middle">1.010</text>
+  <circle cx="622.22" cy="534.66" r="10.50" fill="#26b979" stroke="#1e293b" stroke-width="1.40"/>
+  <text x="622.22" y="538.26" fill="#0b1220" font-size="11.5" font-weight="600" text-anchor="middle">4</text>
+  <text x="622.22" y="556.66" fill="#cbd5e1" stroke="#0b1220" stroke-width="2.6" stroke-linejoin="round" paint-order="stroke" font-size="9" text-anchor="middle">1.018</text>
+  <circle cx="908.43" cy="488.78" r="10.50" fill="#26b77c" stroke="#1e293b" stroke-width="1.40"/>
+  <text x="908.43" y="492.38" fill="#0b1220" font-size="11.5" font-weight="600" text-anchor="middle">5</text>
+  <text x="908.43" y="510.78" fill="#cbd5e1" stroke="#0b1220" stroke-width="2.6" stroke-linejoin="round" paint-order="stroke" font-size="9" text-anchor="middle">1.020</text>
+  <circle cx="936.23" cy="238.12" r="13.00" fill="#3396c8" stroke="#cbd5e1" stroke-width="2.00"/>
+  <text x="936.23" y="241.72" fill="#f8fafc" font-size="11.5" font-weight="600" text-anchor="middle">6</text>
+  <text x="936.23" y="262.62" fill="#cbd5e1" stroke="#0b1220" stroke-width="2.6" stroke-linejoin="round" paint-order="stroke" font-size="9" text-anchor="middle">1.070</text>
+  <circle cx="327.85" cy="533.58" r="10.50" fill="#319cbb" stroke="#1e293b" stroke-width="1.40"/>
+  <text x="327.85" y="537.18" fill="#f8fafc" font-size="11.5" font-weight="600" text-anchor="middle">7</text>
+  <text x="327.85" y="555.58" fill="#cbd5e1" stroke="#0b1220" stroke-width="2.6" stroke-linejoin="round" paint-order="stroke" font-size="9" text-anchor="middle">1.062</text>
+  <circle cx="86.00" cy="622.39" r="13.00" fill="#3889e6" stroke="#cbd5e1" stroke-width="2.00"/>
+  <text x="86.00" y="625.99" fill="#f8fafc" font-size="11.5" font-weight="600" text-anchor="middle">8</text>
+  <text x="86.00" y="646.89" fill="#cbd5e1" stroke="#0b1220" stroke-width="2.6" stroke-linejoin="round" paint-order="stroke" font-size="9" text-anchor="middle">1.090</text>
+  <circle cx="467.49" cy="359.01" r="10.50" fill="#2f9fb2" stroke="#1e293b" stroke-width="1.40"/>
+  <text x="467.49" y="362.61" fill="#f8fafc" font-size="11.5" font-weight="600" text-anchor="middle">9</text>
+  <text x="467.49" y="381.01" fill="#cbd5e1" stroke="#0b1220" stroke-width="2.6" stroke-linejoin="round" paint-order="stroke" font-size="9" text-anchor="middle">1.056</text>
+  <circle cx="435.02" cy="157.94" r="10.50" fill="#2ea3ab" stroke="#1e293b" stroke-width="1.40"/>
+  <text x="435.02" y="161.54" fill="#f8fafc" font-size="11.5" font-weight="600" text-anchor="middle">10</text>
+  <text x="435.02" y="179.94" fill="#cbd5e1" stroke="#0b1220" stroke-width="2.6" stroke-linejoin="round" paint-order="stroke" font-size="9" text-anchor="middle">1.051</text>
+  <circle cx="675.11" cy="120.00" r="10.50" fill="#309fb4" stroke="#1e293b" stroke-width="1.40"/>
+  <text x="675.11" y="123.60" fill="#f8fafc" font-size="11.5" font-weight="600" text-anchor="middle">11</text>
+  <text x="675.11" y="142.00" fill="#cbd5e1" stroke="#0b1220" stroke-width="2.6" stroke-linejoin="round" paint-order="stroke" font-size="9" text-anchor="middle">1.057</text>
+  <circle cx="1114.00" cy="120.00" r="10.50" fill="#2fa0b1" stroke="#1e293b" stroke-width="1.40"/>
+  <text x="1114.00" y="123.60" fill="#f8fafc" font-size="11.5" font-weight="600" text-anchor="middle">12</text>
+  <text x="1114.00" y="142.00" fill="#cbd5e1" stroke="#0b1220" stroke-width="2.6" stroke-linejoin="round" paint-order="stroke" font-size="9" text-anchor="middle">1.055</text>
+  <circle cx="919.94" cy="120.00" r="10.50" fill="#2ea3aa" stroke="#1e293b" stroke-width="1.40"/>
+  <text x="919.94" y="123.60" fill="#f8fafc" font-size="11.5" font-weight="600" text-anchor="middle">13</text>
+  <text x="919.94" y="142.00" fill="#cbd5e1" stroke="#0b1220" stroke-width="2.6" stroke-linejoin="round" paint-order="stroke" font-size="9" text-anchor="middle">1.050</text>
+  <circle cx="674.25" cy="222.56" r="10.50" fill="#2aad94" stroke="#1e293b" stroke-width="1.40"/>
+  <text x="674.25" y="226.16" fill="#f8fafc" font-size="11.5" font-weight="600" text-anchor="middle">14</text>
+  <text x="674.25" y="244.56" fill="#cbd5e1" stroke="#0b1220" stroke-width="2.6" stroke-linejoin="round" paint-order="stroke" font-size="9" text-anchor="middle">1.036</text>
+</g>
+<line x1="40.00" y1="690.00" x2="1160.00" y2="690.00" stroke="#1e293b" stroke-width="1"/>
+<g font-family="system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif">
+  <text x="40.00" y="714.00" fill="#cbd5e1" font-size="11.5" font-weight="600">bus voltage (pu)</text>
+  <rect x="40.00" y="722.00" width="232" height="11" rx="3" fill="url(#voltageRamp)"/>
+  <text x="40.00" y="750.00" fill="#94a3b8" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" text-anchor="middle">0.90</text>
+  <text x="98.00" y="750.00" fill="#94a3b8" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" text-anchor="middle">0.95</text>
+  <text x="156.00" y="750.00" fill="#94a3b8" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" text-anchor="middle">1.00</text>
+  <text x="214.00" y="750.00" fill="#94a3b8" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" text-anchor="middle">1.05</text>
+  <text x="272.00" y="750.00" fill="#94a3b8" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5" text-anchor="middle">1.10</text>
+  <text x="340.00" y="714.00" fill="#cbd5e1" font-size="11.5" font-weight="600">branch loading</text>
+  <line x1="340.00" y1="728.00" x2="396.00" y2="728.00" stroke="#21cca6" stroke-width="3.03" stroke-linecap="round"/>
+  <text x="406.00" y="732.00" fill="#94a3b8" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5">25 %</text>
+  <line x1="340.00" y1="746.00" x2="396.00" y2="746.00" stroke="#9dc934" stroke-width="4.26" stroke-linecap="round"/>
+  <text x="406.00" y="750.00" fill="#94a3b8" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5">70 %</text>
+  <line x1="340.00" y1="764.00" x2="396.00" y2="764.00" stroke="#f37235" stroke-width="4.94" stroke-linecap="round"/>
+  <text x="406.00" y="768.00" fill="#94a3b8" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="10.5">105 %</text>
+  <text x="340.00" y="788.00" fill="#64748b" font-size="10.5" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace">line width and arrow size follow the power flow</text>
+  <text x="1160.00" y="718.00" fill="#cbd5e1" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11" text-anchor="end" xml:space="preserve">losses        13.393 MW      30.122 MVAr</text>
+  <text x="1160.00" y="737.00" fill="#cbd5e1" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11" text-anchor="end" xml:space="preserve">voltage       1.0100       1.0900    pu</text>
+  <text x="1160.00" y="756.00" fill="#cbd5e1" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="11" text-anchor="end" xml:space="preserve">mismatch     1.3e-10 pu   after 3 iterations</text>
+</g>
+</svg>
