@@ -5,12 +5,10 @@
 
 C++17 / CMake / 零第三方依赖。
 
+![CI](https://github.com/lcymxm/powerflow/actions/workflows/ci.yml/badge.svg)
 ![language](https://img.shields.io/badge/C%2B%2B-17-00599C)
 ![dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)
 ![license](https://img.shields.io/badge/license-MIT-blue)
-<!-- 推到 GitHub 后把下面这行的 <user> 换成你的用户名，CI 徽章就会自动显示
-![CI](https://github.com/<user>/powerflow/actions/workflows/ci.yml/badge.svg)
--->
 
 ![IEEE 14 节点潮流分布图](docs/figures/ieee14.svg)
 
